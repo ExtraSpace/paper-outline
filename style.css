@@ -1,0 +1,68 @@
+body{
+  line-height: 180%;
+  background: linear-gradient(to bottom right, #efefef, #fff);
+  background: url("https://www.toptal.com/designers/subtlepatterns/patterns/circles-light.png"), linear-gradient(to bottom right, #efefef, #fff);
+  background-repeat: repeat;
+}
+h4.author{
+  font-size: 150%;
+}
+h4.date{
+  font-size: 120%;
+}
+h4.date>em, h4.author>em{
+  font-style: normal;
+}
+h4.date{
+  padding-bottom: 25px;
+}
+ol, ul{
+  margin-top: 10px;
+}
+ol>li{
+  font-size: 95%;
+  /* list-style-type: upper-roman; */
+}
+ul>li {
+  margin-left: 0;
+  margin-bottom: 10px;
+  font-size: 20px;
+  line-height: 30px;
+  list-style:none;
+}
+ul>li:before {
+  content: '\f006';
+  font-family: 'FontAwesome';
+  float: left;
+  margin-left: -1.5em;
+  color: #676767;
+}
+h1{
+  color: #0074D9;
+}
+h1.title{
+  border-left: 8px solid #0074D9;
+  padding-left: 20px;
+  padding-bottom: 10px;
+  color: #454545;
+  font-weight: 500;
+}
+.section.level2{
+  margin-left: 20px;
+}
+.section.level1, .section.level2{
+  cursor: pointer;
+}
+.red{
+  color: #ff2222;
+}
+pre > code {
+  font-size: 20px;
+  font-family: source code pro, hasklig, monospace;
+}
+
+@media print{
+  .red{
+    color: #ff2222;
+  }
+}
