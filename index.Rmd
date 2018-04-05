@@ -143,11 +143,11 @@ $$
 ---
 
 <script>
-<!-- $('.section') -->
-<!--   .find(':header') -->
-<!--   .siblings('ol, ul') -->
-<!--   .not(':eq(7)') -->
-<!--   .hide(); -->
+$('.section')
+  .find(':header')
+  .siblings('ol, ul')
+  <!-- .not(':eq(7)') -->
+  .hide();
 $('.section').find('h1').click(function(){
 	if($(this).siblings('ol, ul').is(':hidden')) {
 	  $(this)

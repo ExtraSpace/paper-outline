@@ -409,7 +409,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">A Comparison on multi-response multivariate estimation methods</h1>
 <h4 class="author"><em>Raju Rimal, Trygve Almøy and Solve Sæbø</em></h4>
-<h4 class="date"><em>03 Apr, 2018</em></h4>
+<h4 class="date"><em>06 Apr, 2018</em></h4>
 
 </div>
 
@@ -558,11 +558,11 @@ $(document).ready(function () {
 <h1><i class="fa fa-toggle-off"></i> Discussion and Conclusion</h1>
 <hr />
 <script>
-<!-- $('.section') -->
-<!--   .find(':header') -->
-<!--   .siblings('ol, ul') -->
-<!--   .not(':eq(7)') -->
-<!--   .hide(); -->
+$('.section')
+  .find(':header')
+  .siblings('ol, ul')
+  <!-- .not(':eq(7)') -->
+  .hide();
 $('.section').find('h1').click(function(){
     if($(this).siblings('ol, ul').is(':hidden')) {
       $(this)
