@@ -13,10 +13,18 @@ output:
     theme: yeti
     css: style.css
   bookdown::pdf_document2: default
-# runtime: shiny
 editor_options: 
   chunk_output_type: console
 ---
+```{r, echo = FALSE, warning=FALSE, message=FALSE, cache=FALSE}
+source("scripts/00-function.r")
+source("scripts/01-setup.r")
+knitr::opts_chunk$set(comment = NULL, out.width = "100%", echo = FALSE)
+```
+
+```{r, echo = FALSE, warning=FALSE, message=FALSE, cache=TRUE}
+source("scripts/03-collection.r")
+```
 
 # <i class = "fa fa-toggle-off"></i> Introduction
 - "Big Data" is becoming a focal discussion in most of the discipline 
@@ -75,17 +83,17 @@ $$
 
 # <i class = "fa fa-toggle-off"></i> Exerimental Design
 - Parameters with single level:
-    - Number of observations (`n`): 100
-    - Number of response variables (`m`): 3
-    - Number of informative response components: 2
-    - Position of predictor components relevant for response components (`relpos`): 1, 4; 2, 3
-    - <span class="red">_Something smart_ </span>(`ypos`): 1; 2, 3
+    - Number of observations (`n`): `r unique(opts$n)`
+    - Number of response variables (`m`): `r unique(opts$m)`
+    - Number of informative response components: `r length(unique(design$relpos[[1]]))`
+    - Position of predictor components relevant for response components (`relpos`): `r unique(opts$relpos)`
+    - <span class="red">_Something smart_ </span>(`ypos`): `r unique(opts$ypos)`
     
 - Parameters with multiple level:
-    - Number of predictor variables (`p`): 2 levels
-    - Decay factor of eigenvalues corresponding to predictors (`gamma`): 2 levels
-    - Decay factor of eigenvalues corresponding to response (`eta`): 2 levels
-    - Coefficient of determination corresponding to each informative response compnents`R2`: 2 levels
+    - Number of predictor variables (`p`): 2 levels (`r opts$p`)
+    - Decay factor of eigenvalues corresponding to predictors (`gamma`): 2 levels (`r opts$gamma`)
+    - Decay factor of eigenvalues corresponding to response (`eta`): 2 levels (`r opts$eta`)
+    - Coefficient of determination corresponding to each informative response compnents`R2`: 2 levels (`r paste0(opts$R2, collapse = "; ")`)
 
 ---
 
@@ -93,16 +101,38 @@ $$
 - Methods used in the study and their short description (how they estimate, what are they based on)
 
     1. Principal Component Regression (PCR)
+        ```{r, out.width="100%", fig.width = 8}
+        coef_plot(1, "PCR", ncomp = 5)
+        ```
     2. Partial Least Squares 1 (PLS1)
+        ```{r, out.width="100%", fig.width = 8}
+        coef_plot(1, "PLS1", ncomp = 5)
+        ```
     3. Partial Least Squares 2 (PLS2)
-    4. Cannonical Partial Least Squares (CPLS)
-    5. Cannonically Powered Partial Least Squares (CPPLS)
-    6. Envelope Estimation in Predictor Space (Xenv)
-    7. Envelope Estimation in Response Space (Yenv)
-    8. Simulteneous envelope estimaion (Senv)
-    9. Ridge Regression (Ridge)
-    10. Lasso Regression (Lasso)
-    
+        ```{r, out.width="100%", fig.width = 8}
+        coef_plot(1, "PLS2", ncomp = 5)
+        ```
+    4. Envelope Estimation in Predictor Space (Xenv)
+        ```{r, out.width="100%", fig.width = 8}
+        coef_plot(1, "Xenv", ncomp = 5)
+        ```
+    5. Envelope Estimation in Response Space (Yenv)
+        ```{r, out.width="100%", fig.width = 8}
+        coef_plot(1, "Yenv", ncomp = 5)
+        ```
+    6. Simulteneous envelope estimaion (Senv)
+        ```{r, out.width="100%", fig.width = 8}
+        coef_plot(1, "Senv", ncomp = 5)
+        ```
+    7. Ridge Regression (Ridge)
+        ```{r, out.width="100%", fig.width = 8}
+        coef_plot(1, "Ridge")
+        ```
+    8. Lasso Regression (Lasso)
+        ```{r, out.width="100%", fig.width = 8}
+        coef_plot(1, "Lasso")
+        ```
+        
 - <span class = "red">_How details should I discuss about these methods in terms their way of estimation and difference between them_</span>
 - As _Xenv_, _Yenv_ and _Senv_ are based on maximum likelihood estimation, principal components of predictors explaining 99.5% of their variation are used.
 
@@ -112,30 +142,97 @@ $$
 - This section explores the inter-connection between the estimation methods and the properties of data based on regression coefficients
 - Our discussion revolve around following factors and their interaction
     - Wide vs Tall predictor matrix
+      ```{r, eval = TRUE, fig.asp = 1}
+      p1 <- get_err_plot(14, "PCR", flip_facet = TRUE)
+      p2 <- get_err_plot(4, "PCR", flip_facet = TRUE)
+      gridExtra::grid.arrange(p1, p2, nrow = 2)
+      ```
     - High vs Low multicollinearity
+      ```{r, eval = TRUE, fig.asp = 1}
+      p1 <- get_err_plot(14, "PCR", flip_facet = TRUE)
+      p2 <- get_err_plot(9, "PCR", flip_facet = TRUE)
+      gridExtra::grid.arrange(p1, p2, nrow = 2)
+      ```
     - High vs Low correlation between responses
+      ```{r, eval = TRUE, fig.asp = 1}
+      p1 <- get_err_plot(14, "PCR", flip_facet = TRUE)
+      p2 <- get_err_plot(5, "PCR", flip_facet = TRUE)
+      gridExtra::grid.arrange(p1, p2, nrow = 2)
+      ```
     - Hight vs Low coefficient of determination
+      ```{r, eval = TRUE, fig.asp = 1}
+      p1 <- get_err_plot(14, "PCR", flip_facet = TRUE)
+      p2 <- get_err_plot(1, "PCR", flip_facet = TRUE)
+      gridExtra::grid.arrange(p1, p2, nrow = 2)
+      ```
 
 ---
 
 # <i class = "fa fa-toggle-off"></i> Systematic Comparison
 - <span class="red">_Should we use MANOVA model or some kind of norm/trace or similar measure for the error and use ANVOA instead?_</span>
 - A MANOVA model is used for statistical analysis
-    $$\mathtt{pred\_err}_{ijkl} = \mu + \mathtt{p}_i * \mathtt{gamma}_j * \mathtt{r2}_k * \mathtt{method}_l + \epsilon_{ijkl}$$
+    $$\mathtt{pred\_err}_{ijklm} = \mu + \mathtt{p}_i * \mathtt{gamma}_j * \mathtt{r2}_k * \mathtt{method}_l * \mathtt{eta}_m + \epsilon_{ijklm}$$
 - In the model the prediction error for each of three response variables are used as response variable and following variables (with levels) and their complete interactions are used as predictor variables.
 
-    a) Number of predictor variables $(p)$: 20 and 100
-    b) Decay factor of eigenvalues of $X$ $(\gamma)$: 0.2 and 0.8
-    c) Decay factor of eigenvalues of $Y$ $(\eta)$: 0.1 and 0.6
-    d) Coefficient of Determination $(\rho)$: 0.4, 0.4 and 0.4, 0.8
-    e) Method of estimation: PCR, PLS1, PLS2, CPLS, CPPLS, Xenvelope, Yenvelope, Senvelope, Ridge and Lasso
+    a) Number of predictor variables $(p)$: `r paste(opts$p, collapse = " and ")`
+    b) Decay factor of eigenvalues of $X$ $(\gamma)$: `r paste(opts$gamma, collapse = " and ")`
+    c) Decay factor of eigenvalues of $Y$ $(\eta)$: `r paste(opts$eta, collapse = " and ")`
+    d) Coefficient of Determination $(\rho)$: `r paste(opts$R2, collapse = " and ")`
+    e) Method of estimation: PCR, PLS1, PLS2, Xenvelope, Yenvelope, Senvelope, Ridge and Lasso
     f) Number of tuning Parameters used (as numeric)
-- An effect plot for fitted MANOVA model,
-    ```{r, echo = FALSE, out.width="90%"}
-    knitr::include_graphics("plots/effect-plot.svg")
+    
+- Following is the MANOVA output for estimation error and prediction error models using number of components (tuning parameters) that results minimum error.
+
+    **Estimation Error Model:**
+    ```{r}
+    est_dta <- design_chr %>% mutate(Design = as.character(1:n())) %>%
+      mutate_at(vars(p, gamma, eta, R2), as.factor) %>%
+      right_join(est_error, by = "Design") %>%
+      mutate_if(is.character, as.factor) %>%
+      mutate_at("p", as.factor) %>%
+      mutate(Response = paste0("Y", Response))
+    
+    est_dta_min <- est_dta %>%
+      group_by(p, gamma, eta, R2, Replication, Method, Response) %>%
+      summarize(Est_Error = min(Est_Error)) %>%
+      spread(Response, Est_Error)
+    
+    est_mdl <- lm(cbind(Y1, Y2, Y3) ~ p * gamma * eta * R2 * Method, data = est_dta_min)
+    anova(est_mdl)
+    ```
+    
+    **Prediction Error Model:**
+    ```{r}
+    pred_dta <- design_chr %>% mutate(Design = as.character(1:n())) %>%
+      mutate_at(vars(p, gamma, eta, R2), as.factor) %>%
+      right_join(pred_error, by = "Design") %>%
+      mutate_if(is.character, as.factor) %>%
+      mutate_at("p", as.factor) %>%
+      mutate(Response = paste0("Y", Response))
+    
+    pred_dta_min <- pred_dta %>%
+      group_by(p, gamma, eta, R2, Replication, Method, Response) %>%
+      summarize(Pred_Error = min(Pred_Error)) %>%
+      spread(Response, Pred_Error)
+    
+    pred_mdl <- lm(cbind(Y1, Y2, Y3) ~ p * gamma * eta * R2 * Method, data = pred_dta_min)
+    anova(pred_mdl)
     ```
 
+- Study of Effect
+    ```{r, fig.asp=0.7, warnings = FALSE, message = FALSE}
+    p1 <- eff_plot("p:gamma:eta", est_mdl, title = "Estimation Error", show_errorbar = TRUE)
+    p2 <- eff_plot("p:gamma:eta", pred_mdl, title = "Prediction Error", show_errorbar = TRUE)
+    gridExtra::grid.arrange(p1, p2, nrow = 1)
+    ```
+    
+    ```{r, fig.asp=0.7, fig.width = 8, warnings = FALSE, message = FALSE}
+    p1 <- eff_plot("Method:gamma:eta", est_mdl, title = "Estimation Error")
+    p2 <- eff_plot("Method:gamma:eta", pred_mdl, title = "Prediction Error")
+    gridExtra::grid.arrange(p1, p2, nrow = 1)
+    ```
 
+    
 ---
 
 # <i class = "fa fa-toggle-off"></i> Discussion and Conclusion
