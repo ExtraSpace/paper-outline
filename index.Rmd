@@ -48,35 +48,36 @@ source("scripts/03-collection.r")
 
 # <i class = "fa fa-toggle-off"></i> Statistical Model
 - Simulation model
+
 $$
 \begin{bmatrix}
 \mathbf{y} \\ \mathbf{x}
-\end{bmatrix} \sim \mathbf{N}\left(
+\end{bmatrix} \sim \mathbf{n}\left(
 \begin{bmatrix}
 \boldsymbol{\mu}_{y} \\
 \boldsymbol{\mu}_x
 \end{bmatrix},
 \begin{bmatrix}
-\boldsymbol{\Sigma}_{yy} & \boldsymbol{\Sigma}_{yx} \\
-\boldsymbol{\Sigma}_{xy} & \boldsymbol{\Sigma}_{xx}
-\end{bmatrix}
-\right)
+\boldsymbol{\sigma}_{yy} & \boldsymbol{\sigma}_{yx} \\
+\boldsymbol{\sigma}_{xy} & \boldsymbol{\sigma}_{xx}
+\end{bmatrix} \right)
 $$
-- Define transformation as $\mathbf{z} = \mathbf{Rx}$ and $\mathbf{w} = \mathbf{Qy}$
-- Equivalent latent model will be,
+
+- define transformation as $\mathbf{z} = \mathbf{rx}$ and $\mathbf{w} = \mathbf{qy}$
+- equivalent latent model will be,
+
 $$
 \begin{bmatrix}
 \mathbf{w} \\ \mathbf{z}
-\end{bmatrix} \sim \mathbf{N}\left(
+\end{bmatrix} \sim \mathbf{n}\left(
 \begin{bmatrix}
 \boldsymbol{\mu}_{w} \\
 \boldsymbol{\mu}_x
 \end{bmatrix},
 \begin{bmatrix}
-\boldsymbol{\Sigma}_{ww} & \boldsymbol{\Sigma}_{wz} \\
-\boldsymbol{\Sigma}_{zw} & \boldsymbol{\Sigma}_{zz}
-\end{bmatrix}
-\right)
+\boldsymbol{\sigma}_{ww} & \boldsymbol{\sigma}_{wz} \\
+\boldsymbol{\sigma}_{zw} & \boldsymbol{\sigma}_{zz}
+\end{bmatrix} \right)
 $$
 
 - <span class='red'>_How much should I discuss about simrel-M??_</span>
@@ -106,7 +107,7 @@ $$
     })
     do.call(gridExtra::grid.arrange, `$<-`(plts, ncol, 3))
     ```
-        
+    
     ```{r, fig.asp = 1}
     set.seed(010101)
     design %>% get_design(1) %>% simulate() %>% ggsimrelplot()
@@ -145,7 +146,7 @@ $$
         ```{r, out.width="100%", fig.width = 8}
         coef_plot(1, "Lasso")
         ```
-        
+    
 - <span class = "red">_How details should I discuss about these methods in terms their way of estimation and difference between them_</span>
 - As _Xenv_, _Yenv_ and _Senv_ are based on maximum likelihood estimation, principal components of predictors explaining 99.5% of their variation are used.
 
